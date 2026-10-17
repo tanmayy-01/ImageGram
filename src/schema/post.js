@@ -12,6 +12,11 @@ const postSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+    isPublic:  {
+        type: Boolean,
+        required: true,
+        default: false
     }
 }, {timestamps: true});
 

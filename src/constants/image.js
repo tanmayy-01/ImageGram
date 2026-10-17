@@ -1,0 +1,1 @@
+export const allowedMimeTypes = ['image/jpeg', 'image/png'];
