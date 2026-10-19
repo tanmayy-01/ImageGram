@@ -1,6 +1,6 @@
 import { BUCKET_NAME } from "../config/serverConfig.js";
 import { supabase } from "../config/supabaseConfig.js";
-import { countAllPosts, createPost, deletePostById, findAllPosts } from "../repositories/postRepository.js";
+import { countAllPosts, createPost, deletePostById, findAllPosts, updatePostbyId } from "../repositories/postRepository.js";
 
 export const createPostService = async (createPostObject) => {
   const { caption, file, isPublic } = createPostObject;
@@ -53,4 +53,32 @@ export const getAllPostsService = async (offSet, limit) => {
 export const deletePostService = async (id) => {
   const response = await deletePostById(id)
   return response;
+}
+
+export const updatePostService = async (id, updatedObject, file) => {
+
+  if(file) {
+    const ext = file.mimetype.split("/")[1];
+  const fileName = `${crypto.randomUUID()}.${ext}`;
+  const filePath = `public/${fileName}`;
+
+  const { error } = await supabase.storage
+    .from(BUCKET_NAME)
+    .upload(filePath, file.buffer, {
+      contentType: file.mimetype,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from(BUCKET_NAME)
+    .getPublicUrl(filePath);
+
+    updatedObject.image = publicUrlData.publicUrl;
+  }
+
+  const post = await updatePostbyId(id, updatedObject);
+  return post;
 }
