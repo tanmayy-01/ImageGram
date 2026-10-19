@@ -24,3 +24,15 @@ export const createPost = async (req, res) => {
     });
   }
 };
+
+export const getAllPosts = async (req,res) => {
+  try {
+    //TODO: Implement logic
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Something went wrong.",
+    });
+  }
+}
